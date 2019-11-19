@@ -1,27 +1,49 @@
 # Install ThingsPro Edge v1.1.0
 ## Set to Default
-mx-set-def
+
+Remove docker folder
+```sh
 rm -rf /overlayfs/docker
+```
+
+Reset to default
+```sh
+mx-set-def
+```
+
+> Note: This will wipe out all the data on the device!
 
 ## Configure Network
+```sh
 dhclient eth0
+```
+> Note: Make sure there is a dhcp server on LAN1
 
 ## Download and Install ThingsPro
+```sh
 wget https://moxaics.s3-ap-northeast-1.amazonaws.com/v3/edge/builds/edge-core-update/release/iotedge/v1.1.0/400/update_1.1.0-400-uc-8112a-me_armhf.deb && \
 dpkg -i ./update_1.1.0-400-uc-8112a-me_armhf.deb
+```
 
 ## Track Installation Progress
+```sh
 journalctl -u update -f
+```
 
 ## Reboot Device
+```sh
 reboot
+```
 
 # Configure Device - Part 1
+
 ## Make sure applications are ready before doing anything
+```sh
 watch appman app ls
+```
 
 ## Setup Network (default: dhcp on eth0)
-```
+```sh
 curl https://127.0.0.1:8443/api/v1/device/ethernets/1 \
     -X PATCH -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k \
@@ -29,18 +51,21 @@ curl https://127.0.0.1:8443/api/v1/device/ethernets/1 \
 ```
 
 ## Sync Time
-```
+```sh
 docker exec -it device_app_1 sh -c "ntpdate tock.stdtime.gov.tw"; hwclock -w;
 ```
 
 ## Enable SSH
+
+By RESTful API
 ```
 curl https://127.0.0.1:8443/api/v1/system/sshserver \
     -X PUT -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k \
     -d '{"enable":true,"port":22}'
 ```
-or
+
+or by `appman` command
 ```
 appman service set sshserver enable=true
 ```
@@ -51,36 +76,36 @@ appman service set sshserver enable=true
 ![](./Image/Image2.png)
 ![](./Image/Image3.png)
 - Image URI:
-```
-ff4n8xwrph.execute-api.ap-northeast-1.amazonaws.com/moxaics/thingspro-agent:1.1.0-159-armhf
-```
+    ```
+    ff4n8xwrph.execute-api.ap-northeast-1.amazonaws.com/moxaics/thingspro-agent:1.1.0-159-armhf
+    ```
 - Container Create Options:
-```
-{
-  "HostConfig": {
-    "Binds": [
-      "/var/thingspro/iotedge/:/var/thingspro/cloud/setting/",
-      "/var/thingspro/apps/device/moxaenv:/var/thingspro/cloud/setting/moxaenv",
-      "/var/run/:/host/var/run/",
-      "/var/thingspro/data/:/var/thingspro/data/"
-    ],
-    "LogConfig": {
-      "Type": "json-file",
-      "Config": {
-        "max-size": "10m",
-        "max-file": "10"
+    ```
+    {
+      "HostConfig": {
+        "Binds": [
+          "/var/thingspro/iotedge/:/var/thingspro/cloud/setting/",
+          "/var/thingspro/apps/device/moxaenv:/var/thingspro/cloud/setting/moxaenv",
+          "/var/run/:/host/var/run/",
+          "/var/thingspro/data/:/var/thingspro/data/"
+        ],
+        "LogConfig": {
+          "Type": "json-file",
+          "Config": {
+            "max-size": "10m",
+            "max-file": "10"
+          }
+        }
       }
     }
-  }
-}
-```
+    ```
 ![](./Image/Image4.png)
 ![](./Image/Image5.png)
 ![](./Image/Image6.png)
 - Target Condition:
-```
-tags.project='demo'
-```
+    ```
+    tags.project='demo'
+    ```
 ![](./Image/Image7.png)
 
 ## Provision to IoT Edge
@@ -95,14 +120,14 @@ tags.project='demo'
 
 ### Template
 #### Get List
-```
+```sh
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates \
     -X GET "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
 ```
 
 #### Create
-```
+```sh
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates \
     -X POST -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k \
@@ -110,7 +135,7 @@ curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates \
 ```
 
 #### Remove
-```
+```sh
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates?name=myNewTemplate \
     -X DELETE -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
@@ -118,14 +143,14 @@ curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates?name=myNew
 
 ### Device
 #### Get Device List
-```
+```sh
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices \
     -X GET "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
 ```
 
 #### Create
-```
+```sh
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices \
     -X POST -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k \
@@ -133,93 +158,94 @@ curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices \
 ```
 
 #### Remove
-```
+```sh
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices?id={ID} \
     -X DELETE -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
 ```
 
 ### Restart Modbusmaster-tcp Application
-```
+```sh
 curl https://127.0.0.1:8443/api/v1/apps/modbusmaster-tcp/restart \
     -X PUT -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
 ```
 
 ## Message Upload
+
 ### Get all tags
-```
+```sh
 curl https://127.0.0.1:8443/api/v1/tags/all \
     -X GET -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
 ```
 
 ### Get Message Policy
-```
+```sh
 curl https://127.0.0.1:8443/api/v1/azure-iotedge/messages \
     -X GET -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
 ```
 
 ### Set Message Policy
-Message Name: `message-policy-put`
-Payload:
-```
-{
-    "groups": [
-        {
-            "enable": true,
-            "outputTopic": "sample",
-            "properties": [
-        {
-                    "key": "Data Source",
-                    "value": "IIoT Gateway"
-                },
-        {
-                    "key": "Payload Schema",
-                    "value": "Moxa Default"
-                }
-        ],
-            "tags": [
-                {
-                    "srcName": "system",
-                    "tagNames": [
-                        "cpuUsage",
-                        "memoryUsage"
-                    ]
-                }
+- Message Name: `message-policy-put`
+- Payload:
+    ```json
+    {
+        "groups": [
+            {
+                "enable": true,
+                "outputTopic": "sample",
+                "properties": [
+            {
+                        "key": "Data Source",
+                        "value": "IIoT Gateway"
+                    },
+            {
+                        "key": "Payload Schema",
+                        "value": "Moxa Default"
+                    }
             ],
-            "pollingInterval": 0,
-            "sentOutThreshold": {
-                "size": 4096,
-                "time": 10
-            }
-        },
-        {
-            "enable": true,
-            "outputTopic": "sample2",
-            "properties": [],
-            "tags": [
-                {
-                    "srcName": "ioLogik",
-                    "tagNames": [
-                        "di0",
-                        "di1"
-                    ]
+                "tags": [
+                    {
+                        "srcName": "system",
+                        "tagNames": [
+                            "cpuUsage",
+                            "memoryUsage"
+                        ]
+                    }
+                ],
+                "pollingInterval": 0,
+                "sentOutThreshold": {
+                    "size": 4096,
+                    "time": 10
                 }
-            ],
-            "pollingInterval": 5,
-            "sentOutThreshold": {
-                "size": 4096,
-                "time": 0
+            },
+            {
+                "enable": true,
+                "outputTopic": "sample2",
+                "properties": [],
+                "tags": [
+                    {
+                        "srcName": "ioLogik",
+                        "tagNames": [
+                            "di0",
+                            "di1"
+                        ]
+                    }
+                ],
+                "pollingInterval": 5,
+                "sentOutThreshold": {
+                    "size": 4096,
+                    "time": 0
+                }
             }
-        }
-    ]
-}
-```
+        ]
+    }
+    ```
 
 ### Remove Message Policy
-```
+```sh
 curl https://127.0.0.1:8443/api/v1/azure-iotedge/messages/1 \
     -X DELETE -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
