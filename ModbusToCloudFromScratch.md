@@ -47,9 +47,9 @@ appman service set sshserver enable=true
 
 # Setup IoT Edge
 ## Prepare IoT Edge Deployment
-![](./Image1.png)
-![](./Image2.png)
-![](./Image3.png)
+![](./Image/Image1.png)
+![](./Image/Image2.png)
+![](./Image/Image3.png)
 - Image URI:
 ```
 ff4n8xwrph.execute-api.ap-northeast-1.amazonaws.com/moxaics/thingspro-agent:1.1.0-159-armhf
@@ -74,21 +74,21 @@ ff4n8xwrph.execute-api.ap-northeast-1.amazonaws.com/moxaics/thingspro-agent:1.1.
   }
 }
 ```
-![](./Image4.png)
-![](./Image5.png)
-![](./Image6.png)
+![](./Image/Image4.png)
+![](./Image/Image5.png)
+![](./Image/Image6.png)
 - Target Condition:
 ```
 tags.project='demo'
 ```
-![](./Image7.png)
+![](./Image/Image7.png)
 
 ## Provision to IoT Edge
 ### Provision Tool
-![](./Image8.png)
+![](./Image/Image8.png)
 
 ### Check AIE Application from GUI
-![](./Image9.png)
+![](./Image/Image9.png)
 
 # Configure Device - Part 2
 ## Modbus Setting
