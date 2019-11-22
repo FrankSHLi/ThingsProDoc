@@ -52,7 +52,7 @@ curl https://127.0.0.1:8443/api/v1/device/ethernets/1 \
 
 ## Sync Time
 ```sh
-docker exec -it device_app_1 sh -c "ntpdate tock.stdtime.gov.tw"; hwclock -w;
+docker exec -it device_app_1 sh -c "ntpdate pool.ntp.org"; hwclock -w;
 ```
 
 ## Enable SSH
@@ -114,6 +114,9 @@ appman service set sshserver enable=true
 
 ### Check AIE Application from GUI
 ![](./Image/Image9.png)
+> The sample provisioning utility creates the enrollment on DPS for each devices, generates the downstream certificate and enables IoT Edge service.
+
+> We recommand users to create their own version of provisoning utility/service, since there should be more tasks to be finished during the provisioning process, such as changing default password.
 
 # Configure Device - Part 2
 ## Modbus Setting
