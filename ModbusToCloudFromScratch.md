@@ -174,6 +174,11 @@ curl https://127.0.0.1:8443/api/v1/apps/modbusmaster-tcp/restart \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
 ```
 
+### Check Current Tag Data
+```sh
+curl -H "mx-api-token: $(cat /var/thingspro/data/mx-api-token)" -k https://127.0.0.1:8443/api/v1/tags/monitor/ioLogik | json_pp
+```
+
 ## Message Upload
 
 ### Get all tags
