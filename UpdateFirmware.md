@@ -10,7 +10,7 @@ UC-8112A-ME-T Series comes with a SD/SIM card holder in the front of the device,
 3. (Putty) Configure the finction keys and keypad to SCO
 ![](./Image/upgrade_fw_1.png)
 
-4. (Putty) Open Session
+4. (Putty) Open session
 ![](./Image/upgrade_fw_2.png)
 
 5. Get into the boot menu by rebooting the UC-8112A-ME-T and long press `*` before it enters OS.
