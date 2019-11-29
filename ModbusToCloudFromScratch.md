@@ -134,7 +134,7 @@ curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates \
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates \
     -X POST -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k \
-    -d '{"tagList":[{"address":0,"function":"read-discrete-inputs","id":"di0","op":"read","pollingPeriodMs":1000,"quantity":1,"requestTimeoutMs":5000,"type":"boolean","unit":"psi"},{"address":1,"function":"read-discrete-inputs","id":"di1","op":"read","pollingPeriodMs":1000,"quantity":1,"requestTimeoutMs":5000,"type":"boolean","unit":"psi"},{"address":2,"function":"read-discrete-inputs","id":"di2","op":"read","pollingPeriodMs":1000,"quantity":1,"requestTimeoutMs":5000,"type":"boolean","unit":"psi"},{"address":3,"function":"read-discrete-inputs","id":"di3","op":"read","pollingPeriodMs":1000,"quantity":1,"requestTimeoutMs":5000,"type":"boolean","unit":"psi"}],"templateName":"myNewTemplate"}'
+    -d '{"tagList":[{"address":0,"function":"read-coils","id":"ClearFlag","op":"read","pollingPeriodMs":10000,"quantity":1,"requestTimeoutMs":5000,"type":"boolean","unit":""},{"address":0,"function":"read-discrete-inputs","id":"EventFlag","op":"read","pollingPeriodMs":10000,"quantity":1,"requestTimeoutMs":5000,"type":"boolean","unit":""},{"address":0,"function":"read-holding-registers","id":"AI-mode","op":"read","pollingPeriodMs":10000,"quantity":2,"requestTimeoutMs":5000,"type":"float32","unit":""},{"address":0,"function":"read-input-registers","id":"DI-0","op":"read","pollingPeriodMs":10000,"quantity":4,"requestTimeoutMs":5000,"type":"float64","unit":""}],"templateName":"myNewTemplate"}'
 ```
 
 #### Remove
@@ -157,7 +157,7 @@ curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices \
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices \
     -X POST -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k \
-    -d '{"name":"ioLogik","templateName":"myNewTemplate","interface":"eth0","slaveId":1,"slaveIpAddress":"10.144.48.147","port":502}'
+    -d '{"name":"myModbusSlave","templateName":"myNewTemplate","interface":"eth0","slaveId":1,"slaveIpAddress":"10.144.48.147","port":502}'
 ```
 
 #### Remove
@@ -175,9 +175,14 @@ curl https://127.0.0.1:8443/api/v1/apps/modbusmaster-tcp/restart \
 ```
 
 ### Check Current Tag Data
-```sh
-curl -H "mx-api-token: $(cat /var/thingspro/data/mx-api-token)" -k https://127.0.0.1:8443/api/v1/tags/monitor/ioLogik | json_pp
-```
+- Query the latest tag values
+    ```sh
+    curl -H "mx-api-token: $(cat /var/thingspro/data/mx-api-token)" -k https://127.0.0.1:8443/api/v1/tags/monitor/myModbusSlave | json_pp
+    ```
+- Subscribe to tag changes
+    ```sh
+    docker exec -it tagservice_server_1 mxtagfsub
+    ```
 
 ## Message Upload
 
@@ -203,7 +208,7 @@ curl https://127.0.0.1:8443/api/v1/azure-iotedge/messages \
         "groups": [
             {
                 "enable": true,
-                "outputTopic": "sample",
+                "outputTopic": "SystemTag",
                 "properties": [
             {
                         "key": "Data Source",
@@ -224,26 +229,28 @@ curl https://127.0.0.1:8443/api/v1/azure-iotedge/messages \
                     }
                 ],
                 "pollingInterval": 0,
-                "sentOutThreshold": {
+                "sendOutThreshold": {
                     "size": 4096,
                     "time": 10
                 }
             },
             {
                 "enable": true,
-                "outputTopic": "sample2",
+                "outputTopic": "ModbusTag",
                 "properties": [],
                 "tags": [
                     {
-                        "srcName": "ioLogik",
+                        "srcName": "myModbusSlave",
                         "tagNames": [
-                            "di0",
-                            "di1"
+                            "ClearFlag",
+                            "EventFlag",
+                            "AI-mode",
+                            "DI-0"
                         ]
                     }
                 ],
                 "pollingInterval": 5,
-                "sentOutThreshold": {
+                "sendOutThreshold": {
                     "size": 4096,
                     "time": 0
                 }
