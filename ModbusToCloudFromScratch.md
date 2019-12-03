@@ -125,7 +125,7 @@ appman service set sshserver enable=true
 #### Get List
 ```sh
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates \
-    -X GET "Content-Type:application/json" \
+    -X GET -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
 ```
 
@@ -148,7 +148,7 @@ curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates?name=myNew
 #### Get Device List
 ```sh
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices \
-    -X GET "Content-Type:application/json" \
+    -X GET -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
 ```
 
