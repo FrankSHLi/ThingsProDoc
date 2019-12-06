@@ -3,7 +3,7 @@
 
 Remove docker folder
 ```sh
-rm -rf /overlayfs/docker
+rm -rf /overlayfs/docker /overlayfs/working/docker
 ```
 
 Reset to default
@@ -77,7 +77,7 @@ appman service set sshserver enable=true
 ![](./Image/Image3.png)
 - Image URI:
     ```
-    ff4n8xwrph.execute-api.ap-northeast-1.amazonaws.com/moxaics/thingspro-agent:1.1.0-159-armhf
+    moxa2019/thingspro-agent:1.1.0-219-armhf
     ```
 - Container Create Options:
     ```
