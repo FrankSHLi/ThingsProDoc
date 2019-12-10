@@ -110,10 +110,24 @@ appman service set sshserver enable=true
 
 ## Provision to IoT Edge
 ### Provision Tool
-![](./Image/Image8.png)
+- Device Discovery
+![](./Image/prov1.png)
+
+- Select Target Devices
+![](./Image/prov2.png)
+
+- Provide Device Credential and Specify Provision Destination
+![](./Image/prov3.png)
+
+- Provide Azure DPS Settings and Tags
+![](./Image/prov4.png)
+
+- Check the Provision Result and Azure DPS
+![](./Image/prov5.png)
+![](./Image/prov6.png)
 
 ### Check AIE Application from GUI
-![](./Image/Image9.png)
+![](./Image/Image8.png)
 > The sample provisioning utility creates the enrollment on DPS for each devices, generates the downstream certificate and enables IoT Edge service.
 
 > We recommand users to create their own version of provisoning utility/service, since there should be more tasks to be finished during the provisioning process, such as changing default password.
