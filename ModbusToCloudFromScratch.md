@@ -6,6 +6,8 @@ Reset to default
 mx-set-def
 ```
 
+> Note: Make sure to have a console cable conected to the device.
+
 Remove docker folder
 ```sh
 rm -rf /overlayfs/docker /overlayfs/working/docker
@@ -34,6 +36,10 @@ journalctl -u update -f
 ```sh
 reboot
 ```
+
+> Note: SSH will be disabled after installing ThingsPro Edge
+
+> Note: Make sure to reboot only after the log shows **Stopped MOXA ThingsPro Updater.**
 
 # Configure Device - Part 1
 
@@ -109,6 +115,10 @@ appman service set sshserver enable=true
         ```
 - Target Devices
     ![](./Image/Image5.png)
+    - Priority
+        ```
+        10
+        ```
     - Target Condition:
         ```
         tags.project='demo'
