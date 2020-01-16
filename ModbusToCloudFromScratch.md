@@ -162,10 +162,10 @@ appman service set sshserver enable=true
 - Select Target Devices
 ![](./Image/prov2.png)
 
-- Provide Device Credential and Specify Provision Destination
+- Provide Device Credential and Specify Provision Configuration
 ![](./Image/prov3.png)
 
-- Provide Azure DPS Settings and Tags
+- Provision
 ![](./Image/prov4.png)
 
 - Check the Provision Result and Azure DPS
