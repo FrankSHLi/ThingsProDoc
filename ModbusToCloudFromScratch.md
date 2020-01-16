@@ -1,14 +1,14 @@
 # Install ThingsPro Edge v1.1.0
 ## Set to Default
 
-Remove docker folder
-```sh
-rm -rf /overlayfs/docker /overlayfs/working/docker
-```
-
 Reset to default
 ```sh
 mx-set-def
+```
+
+Remove docker folder
+```sh
+rm -rf /overlayfs/docker /overlayfs/working/docker
 ```
 
 > Note: This will wipe out all the data on the device!
@@ -21,8 +21,8 @@ dhclient eth0
 
 ## Download and Install ThingsPro
 ```sh
-wget https://moxaics.s3-ap-northeast-1.amazonaws.com/v3/edge/builds/edge-core-update/release/iotedge/v1.1.0/400/update_1.1.0-400-uc-8112a-me_armhf.deb && \
-dpkg -i ./update_1.1.0-400-uc-8112a-me_armhf.deb
+wget https://moxaqastorage.blob.core.windows.net/store/update_1.1.0-898-uc-8112a-me_armhf.deb && \
+dpkg -i ./update_1.1.0-898-uc-8112a-me_armhf.deb
 ```
 
 ## Track Installation Progress
@@ -72,41 +72,49 @@ appman service set sshserver enable=true
 
 # Setup IoT Edge
 ## Prepare IoT Edge Deployment
-![](./Image/Image1.png)
+- Create Deployment
+        ![](./Image/Image1.png)
+- Name and Label
 ![](./Image/Image2.png)
-![](./Image/Image3.png)
-- Image URI:
-    ```
-    moxa2019/thingspro-agent:1.1.0-219-armhf
-    ```
-- Container Create Options:
-    ```
-    {
-      "HostConfig": {
-        "Binds": [
-          "/var/thingspro/iotedge/:/var/thingspro/cloud/setting/",
-          "/var/thingspro/apps/device/moxaenv:/var/thingspro/cloud/setting/moxaenv",
-          "/var/run/:/host/var/run/",
-          "/var/thingspro/data/:/var/thingspro/data/"
-        ],
-        "LogConfig": {
-          "Type": "json-file",
-          "Config": {
-            "max-size": "10m",
-            "max-file": "10"
-          }
+- Modules
+    ![](./Image/Image3.png)
+    ![](./Image/Image3-1.png)
+    - Image URI:
+        ```
+        moxa2019/thingspro-agent:1.1.0-226-armhf
+        ```
+    ![](./Image/Image3-2.png)
+    - Container Create Options:
+        ```
+        {
+            "HostConfig": {
+                "Binds": [
+                    "/var/thingspro/iotedge/:/var/thingspro/cloud/setting/",
+                    "/var/thingspro/apps/device/moxaenv:/var/thingspro/cloud/setting/moxaenv",
+                    "/var/run/:/host/var/run/",
+                    "/var/thingspro/data/:/var/thingspro/data/"
+                ]
+            }
         }
-      }
-    }
-    ```
-![](./Image/Image4.png)
-![](./Image/Image5.png)
-![](./Image/Image6.png)
-- Target Condition:
-    ```
-    tags.project='demo'
-    ```
-![](./Image/Image7.png)
+        ```
+- Routes
+    ![](./Image/Image4.png)
+    - NAME:
+        ```
+        route
+        ```
+    - VALUE:
+        ```
+        FROM /messages/* INTO $upstream
+        ```
+- Target Devices
+    ![](./Image/Image5.png)
+    - Target Condition:
+        ```
+        tags.project='demo'
+        ```
+- Review + create
+    ![](./Image/Image6.png)
 
 ## Provision to IoT Edge
 ### Provision Tool
@@ -140,7 +148,7 @@ appman service set sshserver enable=true
 ```sh
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates \
     -X GET -H "Content-Type:application/json" \
-    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
+    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
 ```
 
 #### Create
@@ -148,14 +156,14 @@ curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates \
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates \
     -X POST -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k \
-    -d '{"tagList":[{"address":0,"function":"read-coils","id":"ClearFlag","op":"read","pollingPeriodMs":10000,"quantity":1,"requestTimeoutMs":5000,"type":"boolean","unit":""},{"address":0,"function":"read-discrete-inputs","id":"EventFlag","op":"read","pollingPeriodMs":10000,"quantity":1,"requestTimeoutMs":5000,"type":"boolean","unit":""},{"address":0,"function":"read-holding-registers","id":"AI-mode","op":"read","pollingPeriodMs":10000,"quantity":2,"requestTimeoutMs":5000,"type":"float32","unit":""},{"address":0,"function":"read-input-registers","id":"DI-0","op":"read","pollingPeriodMs":10000,"quantity":4,"requestTimeoutMs":5000,"type":"float64","unit":""}],"templateName":"myNewTemplate"}'
+    -d '{"tagList":[{"address":4153,"function":"read-coils","id":"AI_0_resetMaxValue","op":"read","pollingPeriodMs":10000,"quantity":1,"requestTimeoutMs":5000,"type":"boolean","unit":"","byteOrder":"","slope":1,"offset":0},{"address":1000,"function":"read-discrete-inputs","id":"DI_0_counterOverflowFlag","op":"read","pollingPeriodMs":10000,"quantity":1,"requestTimeoutMs":5000,"type":"boolean","unit":"","byteOrder":"","slope":1,"offset":0},{"address":544,"function":"read-holding-registers","id":"AI_0_mode","op":"read","pollingPeriodMs":10000,"quantity":1,"requestTimeoutMs":5000,"type":"float32","unit":"","byteOrder":"","slope":1,"offset":0},{"address":520,"function":"read-input-registers","id":"AI_0_scaledValue","op":"read","pollingPeriodMs":10000,"quantity":2,"requestTimeoutMs":5000,"type":"float32","unit":"mA","byteOrder":"swapWord","slope":1,"offset":0}],"templateName":"ioLogik-E1242"}' | json_pp
 ```
 
 #### Remove
 ```sh
-curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates?name=myNewTemplate \
+curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates?name=ioLogik-E1242 \
     -X DELETE -H "Content-Type:application/json" \
-    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
+    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
 ```
 
 ### Device
@@ -163,7 +171,7 @@ curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates?name=myNew
 ```sh
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices \
     -X GET -H "Content-Type:application/json" \
-    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
+    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
 ```
 
 #### Create
@@ -171,21 +179,21 @@ curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices \
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices \
     -X POST -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k \
-    -d '{"name":"myModbusSlave","templateName":"myNewTemplate","interface":"eth0","slaveId":1,"slaveIpAddress":"10.144.48.147","port":502}'
+    -d '{"name":"E1242","templateName":"ioLogik-E1242","interface":"eth0","slaveId":1,"slaveIpAddress":"10.144.48.150","port":502}' | json_pp
 ```
 
 #### Remove
 ```sh
 curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices?id={ID} \
     -X DELETE -H "Content-Type:application/json" \
-    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
+    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
 ```
 
 ### Restart Modbusmaster-tcp Application
 ```sh
 curl https://127.0.0.1:8443/api/v1/apps/modbusmaster-tcp/restart \
     -X PUT -H "Content-Type:application/json" \
-    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
+    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
 ```
 
 ### Check Current Tag Data
@@ -204,14 +212,14 @@ curl https://127.0.0.1:8443/api/v1/apps/modbusmaster-tcp/restart \
 ```sh
 curl https://127.0.0.1:8443/api/v1/tags/all \
     -X GET -H "Content-Type:application/json" \
-    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
+    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
 ```
 
 ### Get Message Policy
 ```sh
 curl https://127.0.0.1:8443/api/v1/azure-iotedge/messages \
     -X GET -H "Content-Type:application/json" \
-    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
+    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
 ```
 
 ### Set Message Policy
@@ -224,15 +232,15 @@ curl https://127.0.0.1:8443/api/v1/azure-iotedge/messages \
                 "enable": true,
                 "outputTopic": "SystemTag",
                 "properties": [
-            {
+                    {
                         "key": "Data Source",
                         "value": "IIoT Gateway"
                     },
-            {
+                    {
                         "key": "Payload Schema",
                         "value": "Moxa Default"
                     }
-            ],
+                ],
                 "tags": [
                     {
                         "srcName": "system",
@@ -246,7 +254,8 @@ curl https://127.0.0.1:8443/api/v1/azure-iotedge/messages \
                 "sendOutThreshold": {
                     "size": 4096,
                     "time": 10
-                }
+                },
+                "format": ""
             },
             {
                 "enable": true,
@@ -254,20 +263,21 @@ curl https://127.0.0.1:8443/api/v1/azure-iotedge/messages \
                 "properties": [],
                 "tags": [
                     {
-                        "srcName": "myModbusSlave",
+                        "srcName": "E1242",
                         "tagNames": [
-                            "ClearFlag",
-                            "EventFlag",
-                            "AI-mode",
-                            "DI-0"
+                            "AI_0_resetMaxValue",
+                            "DI_0_counterOverflowFlag",
+                            "AI_0_mode",
+                            "AI_0_scaledValue"
                         ]
                     }
                 ],
-                "pollingInterval": 5,
+                "pollingInterval": 20,
                 "sendOutThreshold": {
                     "size": 4096,
-                    "time": 0
-                }
+                    "time": 60
+                },
+                "format": "{iodb:[{(.tagName):(.dataValue),\"Time_\\(.tagName)\":(.ts/1000|todateiso8601)}],deviceId:(.srcName),time:(now|todateiso8601)}"
             }
         ]
     }
@@ -277,5 +287,5 @@ curl https://127.0.0.1:8443/api/v1/azure-iotedge/messages \
 ```sh
 curl https://127.0.0.1:8443/api/v1/azure-iotedge/messages/1 \
     -X DELETE -H "Content-Type:application/json" \
-    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
+    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
 ```
