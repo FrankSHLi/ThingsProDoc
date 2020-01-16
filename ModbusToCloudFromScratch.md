@@ -146,7 +146,7 @@ appman service set sshserver enable=true
                 "initialTwin": {
                 "properties": {},
                 "tags": {
-                    "project": "demo"
+                    "{Key}": "{Value}"
                 }
                 },
                 "generateDownstreamCertificate": true,
