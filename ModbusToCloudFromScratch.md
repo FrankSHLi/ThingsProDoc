@@ -128,6 +128,34 @@ appman service set sshserver enable=true
 
 ## Provision to IoT Edge
 ### Provision Tool
+- Modify Configuration File
+    ```
+    {
+        "steps": [
+            {
+            "target": "Predefined",
+            "description": "",
+            "path": "",
+            "method": "provision iot edge using dps",
+            "post": {
+                "scope": "{Service Endpoint of DPS}",
+                "keyName": "{Shared Access Policy}",
+                "key": "{Shared Access keys}",
+                "scopeId": "{ID Scope of DPS}",
+                "iotHubHostName": "{Target IoT Hub}",
+                "initialTwin": {
+                "properties": {},
+                "tags": {
+                    "project": "demo"
+                }
+                },
+                "generateDownstreamCertificate": true,
+                "enableIoTEdge": true
+            }
+            }
+        ]
+    }
+    ```
 - Device Discovery
 ![](./Image/prov1.png)
 
