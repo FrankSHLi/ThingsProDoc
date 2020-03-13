@@ -22,10 +22,16 @@ dhclient eth0
 > Note: Make sure there is a dhcp server on LAN1
 
 ## Download and Install ThingsPro
-```sh
-wget https://moxaqastorage.blob.core.windows.net/store/update_1.1.0-898-uc-8112a-me_armhf.deb && \
-dpkg -i ./update_1.1.0-898-uc-8112a-me_armhf.deb
-```
+- armhf:
+    ```sh
+    wget https://moxaqastorage.blob.core.windows.net/store/update_1.1.0-898-uc-8112a-me_armhf.deb && \
+    dpkg -i ./update_1.1.0-898-uc-8112a-me_armhf.deb
+    ```
+- amd64:
+    ```
+    wget https://moxaqastorage.blob.core.windows.net/store/update_1.1.0-1204-mc-1112_amd64.deb && \
+    dpkg -i ./update_1.1.0-1204-mc-1112_amd64.deb
+    ```
 
 ## Track Installation Progress
 ```sh
@@ -86,9 +92,14 @@ appman service set sshserver enable=true
     ![](./Image/Image3.png)
     ![](./Image/Image3-1.png)
     - Image URI:
-        ```
-        moxa2019/thingspro-agent:1.1.0-226-armhf
-        ```
+        - armhf:
+            ```
+            moxa2019/thingspro-agent:1.1.0-226-armhf
+            ```
+        - amd64:
+            ```
+            moxa2019/thingspro-agent:1.1.0-226-amd64
+            ```
     ![](./Image/Image3-2.png)
     - Container Create Options:
         ```
