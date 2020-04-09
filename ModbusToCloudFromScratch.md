@@ -27,7 +27,7 @@ dhclient eth0
 ## Download and Install ThingsPro
 - armhf:
     ```sh
-    wget https://moxaqastorage.blob.core.windows.net/store/update_1.1.0-898-uc-8112a-me_armhf.debIf the unit has been installed prior, we should reset it back to default before installing ThingsPro Edge. The commands listed below is for armhf. For amd64, please re-image the unit. && \
+    wget https://moxaqastorage.blob.core.windows.net/store/update_1.1.0-898-uc-8112a-me_armhf.deb && \
     dpkg -i ./update_1.1.0-898-uc-8112a-me_armhf.deb
     ```
 - amd64:
