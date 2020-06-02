@@ -85,6 +85,8 @@ or by `appman` command
 appman service set sshserver enable=true
 ```
 
+> The default username/password for SSH is moxa/moxa and default ip for LAN2 is 192.168.4.127.
+
 # Setup IoT Edge
 ## Prepare IoT Edge Deployment
 - Create Deployment
@@ -188,6 +190,8 @@ appman service set sshserver enable=true
 
 ### Check AIE Application from GUI
 ![](./Image/Image8.png)
+> The default username/password for GUI is admin/admin@123
+
 > The sample provisioning utility creates the enrollment on DPS for each devices, generates the downstream certificate and enables IoT Edge service.
 
 > We recommand users to create their own version of provisoning utility/service, since there should be more tasks to be finished during the provisioning process, such as changing default password.
