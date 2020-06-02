@@ -3,7 +3,7 @@
 
 Reset to default
 
-If the unit has been installed prior, we should reset it back to default before installing ThingsPro Edge. The commands listed below is for `armhf`. For `amd64`, please re-image the unit.
+If the unit has been installed prior, we should reset it back to default before installing ThingsPro Edge.
 
 ```sh
 mx-set-def
@@ -25,15 +25,15 @@ dhclient eth0
 > Note: Make sure there is a dhcp server on LAN1
 
 ## Download and Install ThingsPro
-- armhf:
+- UC-8220:
     ```sh
-    wget https://moxaqastorage.blob.core.windows.net/store/update_1.1.0-898-uc-8112a-me_armhf.deb && \
-    dpkg -i ./update_1.1.0-898-uc-8112a-me_armhf.deb
+    wget https://thingspro.blob.core.windows.net/software/edge/V2.0.0/update_2.0.0-1600-uc-8220-lx-iotedge_armhf.deb && \
+    dpkg -i ./update_2.0.0-1600-uc-8220-lx-iotedge_armhf.deb
     ```
-- amd64:
+- UC-8112A:
     ```
-    wget https://moxaqastorage.blob.core.windows.net/store/update_1.1.0-1204-mc-1112_amd64.deb && \
-    dpkg -i ./update_1.1.0-1204-mc-1112_amd64.deb
+    wget https://thingspro.blob.core.windows.net/software/edge/V2.0.0/update_2.0.0-1600-uc-8112a-me-iotedge_armhf.deb && \
+    dpkg -i ./update_2.0.0-1600-uc-8112a-me-iotedge_armhf.deb
     ```
 
 ## Track Installation Progress
@@ -95,23 +95,19 @@ appman service set sshserver enable=true
     ![](./Image/Image3.png)
     ![](./Image/Image3-1.png)
     - Image URI:
-        - armhf:
-            ```
-            moxa2019/thingspro-agent:1.1.0-226-armhf
-            ```
-        - amd64:
-            ```
-            moxa2019/thingspro-agent:1.1.0-226-amd64
-            ```
+
+        ```
+        moxa2019/thingspro-agent:2.0.0-528-armhf
+        ```
+
     ![](./Image/Image3-2.png)
     - Container Create Options:
         ```
         {
             "HostConfig": {
                 "Binds": [
-                    "/var/thingspro/iotedge/:/var/thingspro/cloud/setting/",
-                    "/var/thingspro/apps/device/moxaenv:/var/thingspro/cloud/setting/moxaenv",
-                    "/var/run/:/host/var/run/",
+                    "/var/thingspro/apps/cloud/data/setting/:/var/thingspro/cloudsetting/",
+                    "/run/:/host/run/",
                     "/var/thingspro/data/:/var/thingspro/data/"
                 ]
             }
@@ -194,58 +190,52 @@ appman service set sshserver enable=true
 
 # Configure Device - Part 2
 ## Modbus Setting
-
-### Template
-#### Get List
-```sh
-curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates \
-    -X GET -H "Content-Type:application/json" \
-    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
-```
-
-#### Create
-```sh
-curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates \
-    -X POST -H "Content-Type:application/json" \
-    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k \
-    -d '{"tagList":[{"address":4153,"function":"read-coils","id":"AI_0_resetMaxValue","op":"read","pollingPeriodMs":10000,"quantity":1,"requestTimeoutMs":5000,"type":"boolean","unit":"","byteOrder":"","slope":1,"offset":0},{"address":1000,"function":"read-discrete-inputs","id":"DI_0_counterOverflowFlag","op":"read","pollingPeriodMs":10000,"quantity":1,"requestTimeoutMs":5000,"type":"boolean","unit":"","byteOrder":"","slope":1,"offset":0},{"address":544,"function":"read-holding-registers","id":"AI_0_mode","op":"read","pollingPeriodMs":10000,"quantity":1,"requestTimeoutMs":5000,"type":"float32","unit":"","byteOrder":"","slope":1,"offset":0},{"address":520,"function":"read-input-registers","id":"AI_0_scaledValue","op":"read","pollingPeriodMs":10000,"quantity":2,"requestTimeoutMs":5000,"type":"float32","unit":"mA","byteOrder":"swapWord","slope":1,"offset":0}],"templateName":"ioLogik-E1242"}' | json_pp
-```
-
-#### Remove
-```sh
-curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/templates?name=ioLogik-E1242 \
-    -X DELETE -H "Content-Type:application/json" \
-    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
-```
-
 ### Device
 #### Get Device List
 ```sh
-curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices \
+curl https://127.0.0.1:8443/api/v1/modbusmaster/config/remote-devs \
     -X GET -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
 ```
 
-#### Create
+#### Create Device(s)
 ```sh
-curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices \
+curl https://127.0.0.1:8443/api/v1/modbusmaster/config/remote-devs \
     -X POST -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k \
-    -d '{"name":"E1242","templateName":"ioLogik-E1242","interface":"eth0","slaveId":1,"slaveIpAddress":"10.144.48.150","port":502}' | json_pp
+    -d '[{"masterTcpIfaceId":1,"name":"ioLogik-E1242","enable":1,"slaveIpaddr":"192.168.4.200","slaveTcpPort":502}]' | json_pp
 ```
 
-#### Remove
+#### Remove Device
+`remoteDevId` can be obtained by **Get Device List**. This API returns `204 No Content` when succeeded.
+
 ```sh
-curl https://127.0.0.1:8443/api/v1/tags/fieldbus/modbus-tcp/devices?id={ID} \
+curl https://127.0.0.1:8443/api/v1/modbusmaster/config/remote-devs/{remoteDevId} \
     -X DELETE -H "Content-Type:application/json" \
+    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k
+```
+### Command
+#### Get Command List
+```
+curl https://127.0.0.1:8443/api/v1/modbusmaster/config/mcmds \
+    -X GET -H "Content-Type:application/json" \
     -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
 ```
 
-### Restart Modbusmaster-tcp Application
+#### Create Command(s)
 ```sh
-curl https://127.0.0.1:8443/api/v1/apps/modbusmaster-tcp/restart \
+curl https://127.0.0.1:8443/api/v1/modbusmaster/config/mcmds?autoCreate=tags \
+    -X POST -H "Content-Type:application/json" \
+    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k \
+    -d '[{"remoteDevId":1,"name":"AI_0_mode","mode":0,"func":3,"readAddress":544,"readQuantity":1,"pollInterval":10000,"swap":0,"dataType":"flaot"}]' | json_pp
+```
+
+### Apply Modbus Configuration
+```sh
+curl https://127.0.0.1:8443/api/v1/modbusmaster/control/config/apply \
     -X PUT -H "Content-Type:application/json" \
-    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k | json_pp
+    -H "mx-api-token:$(cat /var/thingspro/data/mx-api-token)" -k \
+    -d "{}" | json_pp
 ```
 
 ### Check Current Tag Data
