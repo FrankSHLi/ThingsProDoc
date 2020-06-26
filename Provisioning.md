@@ -7,9 +7,9 @@ All the devices will be loaded with:
 
 - Moxa Industrial Linux (Debian)
 - Azure IoT Edge
-- ThingsPro Edge.
+- ThingsPro Edge
 
-Devices will enable Ethernet UDP port 40404 for device discovery by default, users can decide whether to disable it or not on ThingsPro Edge Web GUI or through API after the device provisioning process.
+By default, devices will enable Ethernet UDP port 40404 for device discovery. User can decide whether to disable it or not on ThingsPro Edge Web GUI or through API after the device provisioning process.
 
 ## 2. Provision [By SI or Client]
 
