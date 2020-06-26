@@ -1,10 +1,10 @@
-# System Overview
+# 1. System Overview
 
 ![](./Image/overview.png)
 
-# Install ThingsPro Edge v2.0.0
+# 2. Install ThingsPro Edge v2.0.0
 
-## Check Bootloader Version
+## 2.1 Check Bootloader Version
 
 Please make sure the bootloader version is equal to or later than 1.1.2C11 (UC-8112A) and 2.2.0S02 (UC-8220).
 
@@ -12,7 +12,7 @@ Please make sure the bootloader version is equal to or later than 1.1.2C11 (UC-8
 fw_printenv | grep biosver
 ```
 
-## Check Firmware Version
+## 2.2 Check Firmware Version
 
 Please make sure the base image version is equal to or later than 1.3.2 (UC-8112A) or 1.2 (UC-8220).
 
@@ -20,7 +20,7 @@ Please make sure the base image version is equal to or later than 1.3.2 (UC-8112
 kversion -a
 ```
 
-## Set to Default
+## 2.3 Set to Default
 
 If the unit already has the correct version of bootloader and firmware, and also have been installed prior, we should reset it back to default before installing ThingsPro Edge. Otherwise, we can skip this step.
 
@@ -37,14 +37,14 @@ rm -rf /overlayfs/docker /overlayfs/working/docker
 
 > Note: This will wipe out all the data on the device!
 
-## Configure Network
+## 2.4 Configure Network
 
 ```sh
 dhclient eth0
 ```
 > Note: Make sure there is a dhcp server on LAN1
 
-## Download and Install ThingsPro
+## 2.5 Download and Install ThingsPro
 
 - UC-8220:
 
@@ -62,13 +62,13 @@ dhclient eth0
     dpkg -i ./update_2.0.0-1600-uc-8112a-me-iotedge_armhf.deb
     ```
 
-## Track Installation Progress
+## 2.6 Track Installation Progress
 
 ```sh
 journalctl -u update -f
 ```
 
-## Reboot Device
+## 2.7 Reboot Device
 
 ```sh
 reboot
@@ -78,9 +78,9 @@ reboot
 
 > Note: Make sure to reboot only after the log shows **Stopped MOXA ThingsPro Updater.**
 
-# Configure Device - Part 1
+# 3. Configure Device - Part 1
 
-## Make sure applications are ready before doing anything
+## 3.1 Make Sure Applications are Ready
 
 ```sh
 watch appman app ls
@@ -88,23 +88,23 @@ watch appman app ls
 
 Once all the applications are ready, connect our computer directly to LAN2 and change the computer's IP to 192.168.4.100, then we can login to the web GUI directly by https://192.168.4.127:8443. The default username/password is admin/admin@123.
 
-## Setup Network (default: dhcp on eth0)
+## 3.2 Setup Network (default: dhcp on eth0)
 
 ![](./Image/network.png)
 
-## Sync Time
+## 3.3 Sync Time
 
 ![](./Image/time.png)
 
-## Enable SSH
+## 3.4 Enable SSH
 
 ![](./Image/ssh.png)
 
 > The default username/password for SSH is moxa/moxa and default ip for LAN2 is 192.168.4.127.
 
-# Setup IoT Edge
+# 4. Setup IoT Edge
 
-## Prepare IoT Edge Deployment
+## 4.1 Prepare IoT Edge Deployment
 
 - Create Deployment
 
@@ -200,9 +200,9 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
 
     ![](./Image/deployment11.png)
 
-## Provision to IoT Hub
+## 4.2 Provision to IoT Hub
 
-### Provision Tool
+### 4.2.1 Provision Tool
 
 - Modify Configuration File
     ```
@@ -254,7 +254,7 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
     ![](./Image/prov5.png)
     ![](./Image/prov6.png)
 
-### Check AIE Application from GUI
+### 4.2.2 Check AIE Application from GUI
 
 ![](./Image/Image8.png)
 
@@ -262,15 +262,15 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
 
 > We recommand users to create their own version of provisoning utility/service, since there should be more tasks to be finished during the provisioning process, such as changing default password.
 
-# Configure Device - Part 2
+# 5. Configure Device - Part 2
 
-## Modbus Setting
+## 5.1 Modbus Setting
 
 The modbus settings can be configured through ThingsPro Edge web GUI by clicking the **Modbus Master** tag from the side menu.
 
 ![](./Image/modbus1.png)
 
-### Add a Modbus TCP Device
+### 5.1.1 Add a Modbus TCP Device
 
 ![](./Image/modbus2.png)
 ![](./Image/modbus3.png)
@@ -296,12 +296,12 @@ The modbus settings can be configured through ThingsPro Edge web GUI by clicking
 
 > The configurations won't take effect before we apply them. 
 
-### Apply Changes to Modbus Application
+### 5.1.2 Apply Changes to Modbus Application
 
 ![](./Image/modbus12.png)
 ![](./Image/modbus13.png)
 
-### Check Current Tag Data
+### 5.1.3 Check Current Tag Data
 
 - Query the latest tag values
 
@@ -317,9 +317,9 @@ The modbus settings can be configured through ThingsPro Edge web GUI by clicking
     docker exec -it tagservice_server_1 taghubd sub --all
     ```
 
-## Message Upload
+## 5.2 Message Upload
 
-### Creating Message Group
+### 5.2.1 Creating Message Group
 
 After we've successfully configured the gateway to poll data from the ioLogik, now we send those data to Azure IoT Hub. To make it cost-effective, we are sending messages per minute. Having multiple message groups is supported by ThingsPro Edge.
 
@@ -343,6 +343,8 @@ After we've successfully configured the gateway to poll data from the ioLogik, n
 - Submit
 
     ![](./Image/D2CMessage6.png)
+
+### 5.2.1 Monitor Uploaded Messages
 
 Now the messages are being sent to IoT Hub. We can monitor the messages that are being sent by [**IoT Explorer**](https://github.com/Azure/azure-iot-explorer/releases).
 
