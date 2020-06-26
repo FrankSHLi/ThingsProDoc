@@ -3,7 +3,7 @@
 UC-8112A-ME-T Series comes with a SD/SIM card holder in the front of the device, so we are upgrading the firmware through SD.
 
 ## Step-by-Step
-1. Get the firmware v1.3 image from [here](https://moxa-my.sharepoint.com/:u:/p/franksh_li/EYyw2vOJGaBGh0o6GEtrMQYBW61m3pXgL0IJzz56gNUMZg?e=5eV0Q2)
+1. Get the firmware v1.3.2 image from [here](https://moxa-my.sharepoint.com/:u:/p/franksh_li/Ebf6WJiIEoRJj1iu_NDvM18BRBNPQ8EXcUxyCXWnAWDr_g?e=ZBvO4I)
 
 2. Physically connect PC and UC-8112A-ME-T by Console Cable
 
@@ -26,6 +26,6 @@ UC-8112A-ME-T Series comes with a SD/SIM card holder in the front of the device,
 8. Copy File From MMC0 (Press 0 and enter)
 
 9. Firmware File Name: <THE FILE NAME IN SD CARD WITH EXTENSION>
-    > It should be `FWR_UC-8100A-ME_V1.3_Build_19102418.img` if we havn't modify the file name.
+    > It should be `FWR_UC-8100A-ME_1.3.2_SystemBuild_20032511_ImageBuild_200325_120432.img` if we havn't modify the file name.
 
     ![](./Image/upgrade_fw_4.png)
