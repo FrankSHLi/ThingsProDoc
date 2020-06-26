@@ -2,15 +2,25 @@
 
 ## 1. Factory [By Moxa]
 ### 1.1 Default Setting
-Devices dfault enable UDP port 40404 for device discovery.
+
+All the devices will be loaded with:
+
+- Moxa Industrial Linux (Debian)
+- Azure IoT Edge
+- ThingsPro Edge.
+
+Devices will enable Ethernet UDP port 40404 for device discovery by default, users can decide whether to disable it or not on ThingsPro Edge Web GUI or through API after the device provisioning process.
 
 ## 2. Provision [By SI or Client]
+
 ![](./Image/ProvisionFlow.png)
 
 ### 2.1 Discovery
+
 The provisioning utility broadcasts to UDP port 40404 and wait for response from devices. Once device receives the broadcast, it should respond with it's informations, which will be used during the provisioning process, such as IP address, port and serial number.
 
 ### 2.2 Login
+
 After discovering the devices, now the provisioning utility knows how to invoke API calls to each device. However, most of the ThingsPro APIs are protected by Json Web Tokens. The provisioning utility needs to login each device in order to get their token.
 
 If this is the first time provisioning the device, the provisioning utility can login to the unit with default user name and password, otherwise user will have to provide the login credentials.
@@ -22,6 +32,7 @@ Optional:
 ```
 
 ### 2.3 Get Endorcement Key
+
 The public endorcement key of the TPM can be obtained via API calls, while the private EK never leaves TPM. The public endorcement key will later be provided to DPS.
 
 On the other hand, The storage root key is not provided by ThingsPro Edge API, as it changes once the user takes the ownership of TPM. and it's likely that ThingsPro Edge will not be able to know the latest SRK if users are taking ownership outside of ThingsPro.
@@ -31,6 +42,7 @@ On the other hand, The storage root key is not provided by ThingsPro Edge API, a
 [Reference Link](https://docs.microsoft.com/en-us/azure/iot-dps/concepts-tpm-attestation#overview)
 
 ### 2.4 Create Enrollment
+
 When trying to communicate with DPS, user will need to provide the DPS service enpoint to the provisioning utility. DPS APIs are also protected by access policies, user will also be asked to provide policy name and key as well.
 
 Once the provisioning utility gets all the information it needs, it will generate a SAS token from DPS service enpoint, policy name and key. The SAS token is a required header field for DPS APIs.
@@ -43,6 +55,7 @@ Required:
 ```
 
 ### 2.5 Connection Information Writeback
+
 The device needs to know the ID scope prior to connecting to the internet, the provisioning utility can help user configure the device if the ID scope is provided by user.
 
 ```
@@ -51,6 +64,7 @@ Required:
 ```
 
 ### 2.6 Configure Device
+
 Other device configurations can also be applied in the device provision phase, for example, disabling unused services/ports.
 
 ## 3. Connect to DPS / Provision the Device [By Device]
