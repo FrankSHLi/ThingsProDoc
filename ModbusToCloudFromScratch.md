@@ -96,6 +96,8 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
 
 ![](./Image/ssh.png)
 
+> The default username/password for SSH is moxa/moxa and default ip for LAN2 is 192.168.4.127.
+
 # Setup IoT Edge
 
 ## Prepare IoT Edge Deployment

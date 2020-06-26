@@ -1,10 +1,10 @@
 # Device Provision Flow
 
-## 1. Factory [Moxa]
+## 1. Factory [By Moxa]
 ### 1.1 Default Setting
 Devices dfault enable UDP port 40404 for device discovery.
 
-## 2. Provision [SI or Client]
+## 2. Provision [By SI or Client]
 ![](./Image/ProvisionFlow.png)
 
 ### 2.1 Discovery
@@ -53,7 +53,7 @@ Required:
 ### 2.6 Configure Device
 Other device configurations can also be applied in the device provision phase, for example, disabling unused services/ports.
 
-## 3. Connect [Device]
+## 3. Connect to DPS / Provision the Device [By Device]
 
 Once the device connects to DPS, DPS will generate a nonce, which is also *the key to connect to IoT Hub* in the future, then encrypt it with the EK public and send it back to the device.
 
