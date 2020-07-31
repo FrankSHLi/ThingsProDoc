@@ -3,9 +3,9 @@
 UC-8112A-ME-T Series comes with a SD/SIM card holder in the front of the device, so we are upgrading the firmware through SD.
 
 ## Step-by-Step
-1. Get the firmware v1.3 image from [here](https://moxa-my.sharepoint.com/:u:/p/franksh_li/EYyw2vOJGaBGh0o6GEtrMQYBW61m3pXgL0IJzz56gNUMZg?e=5eV0Q2)
+1. Get the firmware v1.3 image from [here](https://moxa-my.sharepoint.com/:u:/p/franksh_li/EYyw2vOJGaBGh0o6GEtrMQYBW61m3pXgL0IJzz56gNUMZg?e=5eV0Q2) and save it to a SD card.
 
-2. Physically connect PC and UC-8112A-ME-T by Console Cable
+2. Physically connect PC and UC-8112A-ME-T by Console Cable, also insert the SD card to the unit
 
 3. (Putty) Configure the finction keys and keypad to SCO
 
