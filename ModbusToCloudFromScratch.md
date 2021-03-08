@@ -158,7 +158,7 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
         {
             "HostConfig": {
                 "Binds": [
-                    "/var/thingspro/apps/cloud/data/setting/:/var/thingspro/cloudsetting/",
+                    "/var/thingspro/apps/cloud/data/setting/:/var/thingspro/cloud/setting/",
                     "/run/:/host/run/",
                     "/var/thingspro/data/:/var/thingspro/data/"
                 ]
