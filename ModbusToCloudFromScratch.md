@@ -2,85 +2,9 @@
 
 ![](./Image/overview.png)
 
-# 2. Install ThingsPro Edge v2.0.0
+# 2. Configure Device - Part 1
 
-## 2.1 Check Bootloader Version
-
-Please make sure the bootloader version is equal to or later than 1.1.2C11 (UC-8112A) and 2.2.0S02 (UC-8220).
-
-```sh
-fw_printenv | grep biosver
-```
-
-## 2.2 Check Firmware Version
-
-Please make sure the base image version is equal to or later than 1.3.2 (UC-8112A) or 1.2 (UC-8220).
-
-```sh
-kversion -a
-```
-
-## 2.3 Set to Default
-
-If the unit already has the correct version of bootloader and firmware, and also have been installed prior, we should reset it back to default before installing ThingsPro Edge. Otherwise, we can skip this step.
-
-```sh
-mx-set-def
-```
-
-> Note: Make sure to have a console cable conected to the device.
-
-Remove docker folder
-```sh
-rm -rf /overlayfs/docker /overlayfs/working/docker
-```
-
-> Note: This will wipe out all the data on the device!
-
-## 2.4 Configure Network
-
-```sh
-dhclient eth0
-```
-> Note: Make sure there is a dhcp server on LAN1
-
-## 2.5 Download and Install ThingsPro
-
-- UC-8220:
-
-    ```sh
-    wget https://thingspro.blob.core.windows.net/software/edge/V2.0.0/update_2.0.0-1600-uc-8220-lx-iotedge_armhf.deb && \
-    dpkg -i ./update_2.0.0-1600-uc-8220-lx-iotedge_armhf.deb
-    ```
-
-- UC-8112A:
-
-    > Make sure the bootloader version is 1.1.2C11 or later.
-
-    ```sh
-    wget https://thingspro.blob.core.windows.net/software/edge/V2.0.0/update_2.0.0-1600-uc-8112a-me-iotedge_armhf.deb && \
-    dpkg -i ./update_2.0.0-1600-uc-8112a-me-iotedge_armhf.deb
-    ```
-
-## 2.6 Track Installation Progress
-
-```sh
-journalctl -u update -f
-```
-
-## 2.7 Reboot Device
-
-```sh
-reboot
-```
-
-> Note: SSH will be disabled after installing ThingsPro Edge
-
-> Note: Make sure to reboot only after the log shows **Stopped MOXA ThingsPro Updater.**
-
-# 3. Configure Device - Part 1
-
-## 3.1 Make Sure Applications are Ready
+## 2.1 Make Sure Applications are Ready
 
 ```sh
 watch appman app ls
@@ -88,23 +12,23 @@ watch appman app ls
 
 Once all the applications are ready, connect our computer directly to LAN2 and change the computer's IP to 192.168.4.100, then we can login to the web GUI directly by https://192.168.4.127:8443. The default username/password is admin/admin@123.
 
-## 3.2 Setup Network (default: dhcp on eth0)
+## 2.2 Setup Network (default: dhcp on eth0)
 
 ![](./Image/network.png)
 
-## 3.3 Sync Time
+## 2.3 Sync Time
 
 ![](./Image/time.png)
 
-## 3.4 Enable SSH
+## 2.4 Enable SSH
 
 ![](./Image/ssh.png)
 
 > The default username/password for SSH is moxa/moxa and default ip for LAN2 is 192.168.4.127.
 
-# 4. Setup IoT Edge
+# 3. Setup IoT Edge
 
-## 4.1 Prepare IoT Edge Deployment
+## 3.1 Prepare IoT Edge Deployment
 
 - Create Deployment
 
@@ -124,28 +48,28 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
         - Image URI:
 
             ```
-            moxa2019/thingspro-agent:2.0.0-528-armhf
+            moxa2019/thingspro-agent:2.1.1-929-armhf
             ```
 
-    - Fix IoT Edge default modules' version and protocol:
+    - Fix IoT Edge default modules' version (required) and protocol (optional):
 
         ![](./Image/deployment5.png)
         ![](./Image/deployment6.png)
 
-        - Version:
+        - Version: (Required)
 
             ```
-            mcr.microsoft.com/azureiotedge-agent:1.0.9
-            mcr.microsoft.com/azureiotedge-hub:1.0.9
+            mcr.microsoft.com/azureiotedge-agent:1.0.9.4
+            mcr.microsoft.com/azureiotedge-hub:1.0.9.4
             ```
 
-        - Name:
+        - Name: (Optional)
 
             ```
             UpstreamProtocol
             ```
 
-        - Value:
+        - Value: (Optional)
 
             ```
             MqttWs
@@ -200,9 +124,9 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
 
     ![](./Image/deployment11.png)
 
-## 4.2 Provision to IoT Hub
+## 3.2 Provision to IoT Hub
 
-### 4.2.1 Provision Tool
+### 3.2.1 Provision Tool
 
 - Modify Configuration File
     ```
@@ -254,7 +178,7 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
     ![](./Image/prov5.png)
     ![](./Image/prov6.png)
 
-### 4.2.2 Check AIE Application from GUI
+### 3.2.2 Check AIE Application from GUI
 
 ![](./Image/Image8.png)
 
@@ -262,15 +186,15 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
 
 > We recommand users to create their own version of provisoning utility/service, since there should be more tasks to be finished during the provisioning process, such as changing default password.
 
-# 5. Configure Device - Part 2
+# 4. Configure Device - Part 2
 
-## 5.1 Modbus Setting
+## 4.1 Modbus Setting
 
 The modbus settings can be configured through ThingsPro Edge web GUI by clicking the **Modbus Master** tag from the side menu.
 
 ![](./Image/modbus1.png)
 
-### 5.1.1 Add a Modbus TCP Device
+### 4.1.1 Add a Modbus TCP Device
 
 ![](./Image/modbus2.png)
 ![](./Image/modbus3.png)
@@ -296,12 +220,12 @@ The modbus settings can be configured through ThingsPro Edge web GUI by clicking
 
 > The configurations won't take effect before we apply them. 
 
-### 5.1.2 Apply Changes to Modbus Application
+### 4.1.2 Apply Changes to Modbus Application
 
 ![](./Image/modbus12.png)
 ![](./Image/modbus13.png)
 
-### 5.1.3 Check Current Tag Data
+### 4.1.3 Check Current Tag Data
 
 - Query the latest tag values
 
@@ -317,9 +241,9 @@ The modbus settings can be configured through ThingsPro Edge web GUI by clicking
     docker exec -it tagservice_server_1 taghubd sub --all
     ```
 
-## 5.2 Message Upload
+## 4.2 Message Upload
 
-### 5.2.1 Creating Message Group
+### 4.2.1 Creating Message Group
 
 After we've successfully configured the gateway to poll data from the ioLogik, now we send those data to Azure IoT Hub. To make it cost-effective, we are sending messages per minute. Having multiple message groups is supported by ThingsPro Edge.
 
@@ -344,7 +268,7 @@ After we've successfully configured the gateway to poll data from the ioLogik, n
 
     ![](./Image/D2CMessage6.png)
 
-### 5.2.1 Monitor Uploaded Messages
+### 4.2.2 Monitor Uploaded Messages
 
 Now the messages are being sent to IoT Hub. We can monitor the messages that are being sent by [**IoT Explorer**](https://github.com/Azure/azure-iot-explorer/releases).
 
