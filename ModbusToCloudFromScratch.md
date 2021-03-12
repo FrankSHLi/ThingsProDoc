@@ -51,12 +51,12 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
             moxa2019/thingspro-agent:2.1.1-929-armhf
             ```
 
-    - Fix IoT Edge default modules' version (required) and protocol (optional):
+    - Fix IoT Edge default modules' **version (Required)** and protocol (Optional):
 
         ![](./Image/deployment5.png)
         ![](./Image/deployment6.png)
 
-        - Version: (Required)
+        - **Version: (Required)**
 
             ```
             mcr.microsoft.com/azureiotedge-agent:1.0.9.4
@@ -75,8 +75,9 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
             MqttWs
             ```
 
-    ![](./Image/deployment7.png)
     - Container Create Options:
+
+        ![](./Image/deployment7.png)
 
         ```
         {
@@ -90,7 +91,7 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
         }
         ```
 
-    ![](./Image/deployment8.png)
+        ![](./Image/deployment8.png)
 
 - Routes
 
