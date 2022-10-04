@@ -124,7 +124,7 @@ Once all the applications are ready, connect our computer directly to LAN2 and c
         - Image URI:
 
             ```
-            moxa2019/thingspro-agent:2.0.0-528-armhf
+            moxa2019/thingspro-agent:2.1.2-armhf
             ```
 
     - Fix IoT Edge default modules' version and protocol:
